@@ -4,7 +4,7 @@ from netbox.plugins import PluginConfig
 class BackupPluginConfig(PluginConfig):
     name = 'backup_plugin'
     verbose_name = 'Backup Plugin'
-    description = 'Backup'
+    description = 'Netbox and Backup solution integration'
     version = '1.1.0'
     author = 'Bryan Lynn'
     author_email = 'bryankentlynn@gmail.com'
