@@ -1,0 +1,85 @@
+{% extends 'dcim/device/base.html' %}
+{% load static %}
+
+{% block title %}{{ object }}{% endblock %}
+
+{% block head %}
+<style>
+pre {
+    height: auto;
+    max-height: 200px;
+    overflow: scroll;
+    word-break: normal !important;
+    word-wrap: normal !important;
+    white-space: pre !important;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="{% static 'css/diff2html.css' %}" />
+{% include "backup_plugin/inc/backup_config.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-overlay"></div>
+            <h5 class="card-header">Device Backup {{ object }}</h5>
+
+            <div class="card-body">
+            {% if not backup_data %}
+                <div class="alert alert-secondary" role="alert">
+                  No Backup Found
+                </div>
+            {% else %}
+                <table class="table table-hover attr-table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Valid Since</th>
+                        <th scope="col">Valid Until</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for info in backup_data %}
+                    <tr>
+                        <td><a href="#collapse{{ info.id }}" data-bs-toggle="collapse">
+                                <span data-bs-toggle="tooltip" title="Click to expand/collapse backup">
+                                    {{ info.id }}
+                                    {% if forloop.counter0 == 0 %}
+                                    <span class="badge badge-pill badge-primary">latest</span>
+                                    {% endif %}
+                                </span>
+                            </a>
+                        </td>
+                        <td>{{ info.valid_since }}</td>
+                        <td>{{ info.valid_until }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                <div id="form_fields" hx-disinherit="hx-select hx-swap">
+                    {% for info in backup_data %}
+                    <div class="card collapse" id="collapse{{ info.id }}" style="height: 100px;">
+                        <h5 class="card-header">Device Backup {{ info.id }}</h5>
+
+                        <div class="card-body">
+                            <div class="field-group mb-5">
+                                <div >
+                                        <pre>{{ info.config }}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="card">
+                        <div id="id_diff_container"></div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
